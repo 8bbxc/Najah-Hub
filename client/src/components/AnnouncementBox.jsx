@@ -18,7 +18,7 @@ const AnnouncementBox = () => {
 
   useEffect(() => {
     fetch();
-    const socket = io(SOCKET || 'http://localhost:5001');
+    const socket = io(SOCKET || 'https://najah-backend-ykto.onrender.com');
     socket.on('announcementsUpdated', fetch);
     return () => socket.close();
   }, []);

@@ -42,7 +42,7 @@ const PostCard = ({ post, currentUser, onDelete }) => {
   const [pinScopeState, setPinScopeState] = useState(post.pinScope || null);
   // ✅ إعداد السوكت لإرسال التنبيهات
   useEffect(() => {
-    const newSocket = io(SOCKET || 'http://localhost:5001');
+    const newSocket = io(SOCKET || 'https://najah-backend-ykto.onrender.com');
     setSocket(newSocket);
     return () => newSocket.close();
   }, []);

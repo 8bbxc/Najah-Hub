@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Star, Edit2, Trash2 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
-const API = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
+const API = import.meta.env.VITE_API_BASE || 'https://najah-backend-ykto.onrender.com';
 
 function StarsDisplay({ value, size = 18 }) {
   const stars = [];
@@ -163,7 +163,7 @@ export default function RatingPage2(){
             {ratings.length === 0 ? <div className="text-center text-gray-500">لا توجد تقييمات بعد</div> : ratings.map(r => (
               <div key={r.id} className="card-bg border rounded-lg p-4 flex gap-4 items-start">
                 <div className="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-sm font-bold overflow-hidden">
-                  {r.user?.avatar ? <img src={`${API.replace(/http:\/\/localhost:5000/, '')}${r.user.avatar}`} alt="avatar" className="w-full h-full object-cover"/> : (r.user?.name ? r.user.name.charAt(0) : '؟')}
+                  {r.user?.avatar ? <img src={`${API.replace(/https:\/\/najah-backend-ykto.onrender.com/, '')}${r.user.avatar}`} alt="avatar" className="w-full h-full object-cover"/> : (r.user?.name ? r.user.name.charAt(0) : '؟')}
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">

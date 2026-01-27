@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import io from 'socket.io-client';
 import axios from 'axios';
 
-const API = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
+const API = import.meta.env.VITE_API_BASE || 'https://najah-backend-ykto.onrender.com';
 
 export default function PrivateChat({ otherUserId }) {
   const [chat, setChat] = useState(null);

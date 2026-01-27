@@ -3,7 +3,7 @@ import axios from 'axios';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 
-const API = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
+const API = import.meta.env.VITE_API_BASE || 'https://najah-backend-ykto.onrender.com';
 
 export default function Subscription() {
   const [plans, setPlans] = useState([]);
