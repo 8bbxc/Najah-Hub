@@ -1,0 +1,604 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  /* Technical, clean background for engineering students */
+  background: var(--bg-solid);
+  color: var(--text);
+  direction: rtl;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Cairo', sans-serif;
+}
+
+:root{
+  --bg: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  --bg-solid: #ffffff;
+  --text: #0f172a;
+  --header: #ffffff;
+  --card: #ffffff;
+  --muted: #94a3b8;
+  --accent: #0ea5ff;
+}
+
+.dark {
+  /* Dark-blue theme */
+  --bg: linear-gradient(180deg, #051223 0%, #031827 100%);
+  --bg-solid: #121212;
+  /* force high-contrast white text for posts/messages per request */
+  --text: #ffffff;
+  --header: #041526;
+  --card: #121212; /* unified dark card */
+  --muted: #9db6d0;
+  --accent: #1e3a8a; /* deep blue */
+}
+
+.app-bg {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+/* Ensure header and athkar are topmost and visible */
+.app-header { position: sticky; top: 0; z-index: 80; }
+.athkar-bar { position: sticky; top: 64px; z-index: 70; }
+
+.app-header {
+  background: var(--header) !important;
+  border-color: rgba(255,255,255,0.04) !important;
+}
+
+.card-bg {
+  background: var(--card) !important;
+  color: var(--text) !important;
+}
+
+.muted { color: var(--muted); }
+.accent { color: var(--accent); }
+
+/* Dark-mode overrides for Tailwind utility classes we used */
+.dark .bg-white { background: var(--card) !important; color: var(--text) !important; }
+
+/* Admin / Owner UI standardization */
+.admin-surface {
+  background: #ffffff !important;
+  color: #1f2937 !important; /* text-gray-900 */
+}
+.dark .admin-surface {
+  background: #111827 !important; /* gray-900 */
+  color: #f3f4f6 !important; /* gray-100 */
+}
+.admin-modal {
+  background: #ffffff !important;
+  color: #1f2937 !important;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(2,6,23,0.25);
+}
+.dark .admin-modal {
+  background: #111827 !important;
+  color: #f3f4f6 !important;
+}
+
+/* Standardized action button for admin UI */
+.admin-btn {
+  background-color: #4f46e5; /* indigo-600 */
+  color: #ffffff !important;
+  border: none !important;
+  padding: .5rem .8rem;
+  border-radius: .75rem;
+}
+.admin-btn:hover { background-color: #4338ca; /* indigo-700 */ }
+.admin-btn:disabled, .admin-btn[disabled] { opacity: .6; cursor: not-allowed; }
+
+/* Danger button */
+.admin-btn-danger { background-color: #dc2626; color: #fff !important; border: none !important; padding: .45rem .75rem; border-radius: .75rem; }
+.admin-btn-danger:hover { background-color: #b91c1c; }
+
+/* Secondary (outline) */
+.admin-btn-outline { background: transparent; color: inherit; border: 1px solid rgba(0,0,0,0.06); padding: .45rem .75rem; border-radius: .75rem; }
+.dark .admin-btn-outline { border-color: rgba(255,255,255,0.06); }
+
+.dark .bg-gray-50 { background: transparent !important; }
+.dark .bg-gray-100 { background: rgba(255,255,255,0.03) !important; }
+.dark .text-gray-800 { color: var(--text) !important; }
+.dark .text-gray-600, .dark .text-gray-500, .dark .text-gray-400 { color: var(--muted) !important; }
+.dark .border-gray-100 { border-color: rgba(255,255,255,0.04) !important; }
+.dark .shadow-sm, .dark .shadow-md, .dark .shadow-lg { box-shadow: 0 4px 14px rgba(2,6,23,0.2); }
+@keyframes gradient-x {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 8s ease infinite;
+}
+
+/* Fiery accent utilities */
+.bg-fiery {
+  display: none;
+}
+.text-fiery {
+  color: var(--najah-accent, #0ea5a4);
+}
+.card-fiery {
+  background: linear-gradient(180deg, #ffffff, #fbfdff);
+  border: 1px solid rgba(14,165,255,0.06);
+  box-shadow: 0 8px 20px rgba(2,6,23,0.04);
+  border-radius: 16px;
+}
+
+/* utility for monospace badges */
+.tech-badge {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
+}
+
+/* Najah theme helpers that map Tailwind-like utility names to CSS vars */
+.bg-najah-primary { background-color: var(--najah-primary, var(--accent)) !important; }
+.text-najah-primary { color: var(--najah-primary, var(--accent)) !important; }
+.border-najah-primary { border-color: var(--najah-primary, var(--accent)) !important; }
+.card-najah { background: linear-gradient(180deg, var(--card), rgba(0,0,0,0.02)); }
+
+/* Small banner shown after saving settings or similar actions */
+.save-banner {
+  background: #000; /* user requested black background */
+  color: #fff;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+
+.subscription-cta {
+  background: linear-gradient(90deg, rgba(14,165,233,0.12), rgba(99,102,241,0.06));
+  border: 1px solid rgba(14,165,233,0.12);
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.subscription-cta .btn {
+  background: linear-gradient(90deg, #06b6d4, #3b82f6);
+  color: white;
+  padding: 0.5rem 0.9rem;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(11,78,114,0.18);
+}
+
+.aichat-list .conv-btn { text-align: left; padding: .5rem; border-radius: .5rem; }
+.aichat-list .conv-btn.active { background: var(--najah-primary); color: white; }
+.aichat-msg { padding: .75rem; border-radius: .75rem; margin-bottom: .6rem; }
+.aichat-msg.assistant { background: rgba(243,244,246,0.9); color: #0f172a; }
+.aichat-msg.user { background: var(--najah-primary); color: white; }
+
+/* Ensure assistant messages are readable in dark mode (white text) */
+.dark .aichat-msg.assistant {
+  color: #ffffff !important;
+  background: rgba(255,255,255,0.03) !important;
+}
+
+/* Reverted aggressive global overrides that caused layout and color regressions.
+   Keep theme rules minimal and component-scoped. If you need stricter
+   component styles, apply them in the component's CSS or specific class selectors.
+*/
+
+/* Keep card and container coloring conservative and non-invasive */
+.dark .card-bg { color: inherit; }
+.dark .card-bg p, .dark .card-bg span, .dark .card-bg h1, .dark .card-bg h2, .dark .card-bg h3, .dark .card-bg h4, .dark .card-bg h5, .dark .card-bg h6, .dark .card-bg a {
+  color: inherit;
+}
+.dark .card-bg * { color: inherit; }
+
+/* Ensure chat and sidebar containers do not force every nested element's background */
+.community-chat-area { background-color: var(--card); }
+.community-chat-area * { background-color: transparent; color: inherit; }
+.sidebar * { background-color: transparent; color: inherit; }
+
+/* Message bubble: keep inner elements transparent, but avoid forcing global bubble colors */
+.msg-bubble * { background: transparent !important; }
+
+/* Avatar polish kept but not forcing global borders/colors */
+.member-avatar, .msg-avatar { box-shadow: 0 2px 8px rgba(2,6,23,0.12); }
+.member-avatar, .msg-avatar { width:40px; height:40px; display:block; object-fit:cover; border-radius:9999px; }
+
+/* Restore component-level button behavior; avoid forcing all buttons globally */
+.community-members-card .btn-add,
+.community-members-card .btn-settings,
+.community-members-card .btn-remove,
+.community-members-card .btn-promote { color: inherit; }
+
+/* Leave remaining, targeted utilities intact. If more adjustments are required,
+   we should update specific components' classes rather than global overrides. */
+.dark .msg-bubble.owner .msg-author, .dark .msg-bubble.owner .msg-text { color: #9ca3af !important; /* dark grey for owner */ font-weight: 600; }
+.dark .msg-bubble:not(.owner) .msg-author, .dark .msg-bubble:not(.owner) .msg-text { color: #ffffff !important; /* white for members */ font-weight: 600; }
+
+/* Remove any white background behind text - absolute enforcement */
+.msg-author, .msg-text { background: transparent !important; margin: 0 !important; padding: 0 !important; }
+
+/* Ensure bubble has clean dark background with no inner white boxes */
+.dark .msg-bubble.owner { border-color: rgba(255,255,255,0.04) !important; }
+.dark .msg-bubble:not(.owner) { border-color: rgba(255,255,255,0.04) !important; }
+
+/* Strong spacing and alignment for premium look */
+.msg-row { gap: 1rem; padding: 0.5rem 0; align-items: flex-end; }
+.msg-bubble { padding: 0.6rem 0.9rem; font-weight: 600; }
+
+/* Chat container layout */
+.community-chat-area { display:flex; flex-direction:column; }
+.community-chat-area .messages-container { flex:1 1 auto; overflow-y:auto; padding: 1rem; }
+.community-chat-area .input-row { display:flex; gap:.5rem; padding: .75rem; border-top: 1px solid rgba(255,255,255,0.03); align-items:center; }
+.community-chat-area .input-row input[type="text"], .community-chat-area .input-row textarea { flex:1; padding:.6rem .8rem; border-radius:999px; }
+
+/* Buttons: make active/pressed state prominent and ensure white text on click */
+.community-chat-area button:active, .community-chat-area button:focus, .sidebar button:active, .sidebar button:focus, .community-members-card button:active, .community-members-card button:focus {
+  color: #ffffff !important;
+  background: var(--najah-primary, #2563eb) !important;
+  box-shadow: 0 6px 18px rgba(37,99,235,0.12) !important;
+  transform: translateY(0) !important;
+}
+
+/* Ensure buttons are visible in light mode too when active */
+:root .community-chat-area button:active, :root .sidebar button:active { color: #ffffff !important; }
+
+/* Make header and athkar visible when opening community: add top padding to main content to avoid overlap */
+.main-content { padding-top: calc(64px + 40px); } /* navbar height + athkar height */
+
+/* Strong, premium-looking primary button (use .strong-btn on primary CTAs) */
+.strong-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  border-radius: 12px;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(2,6,23,0.12);
+  transition: transform .08s ease, box-shadow .12s ease, opacity .08s ease;
+  border: 1px solid rgba(0,0,0,0.06);
+  cursor: pointer;
+}
+
+/* Owner post styling: make owner posts very prominent in both light & dark */
+.owner-post {
+  background: linear-gradient(180deg, rgba(255,250,240,0.65), rgba(255,249,230,0.45));
+  border: 1px solid rgba(250,204,21,0.28);
+  box-shadow: 0 10px 30px rgba(250,190,40,0.08);
+}
+.dark .owner-post {
+  background: linear-gradient(180deg, rgba(9,18,28,0.6), rgba(12,20,30,0.48));
+  border: 1px solid rgba(255,200,60,0.16);
+  box-shadow: 0 12px 34px rgba(12,7,2,0.4);
+}
+
+.pinned-badge {
+  background: linear-gradient(90deg,#ffd86b,#f7c948);
+  color: #3b2a00;
+  font-weight: 800;
+  padding: .25rem .5rem;
+  border-radius: 999px;
+  font-size: 12px;
+}
+.dark .pinned-badge { background: linear-gradient(90deg,#ffd86b,#ffea9b); color: #3b2a00; box-shadow: 0 6px 18px rgba(255,200,60,0.08); }
+
+/* Light mode strong button */
+:root .strong-btn {
+  background: linear-gradient(180deg,#3b82f6,#06b6d4);
+  color: #ffffff !important;
+  border-color: rgba(3,105,161,0.12) !important;
+}
+
+/* Dark mode strong button: bright accent with clear border so it doesn't blend */
+.dark .strong-btn {
+  background: linear-gradient(180deg,#2563eb,#1e40af) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  box-shadow: 0 8px 28px rgba(2,6,23,0.45) !important;
+}
+
+.strong-btn:active { transform: translateY(1px) !important; box-shadow: 0 6px 18px rgba(2,6,23,0.18) !important; }
+
+/* Ensure admin-btn maps to strong-btn for primary actions to get same look */
+.admin-btn { composes: strong-btn; }
+
+/* Message bubble: strict sender(me) color rules per request */
+/* Dark mode: sent bubble = consistent dark grey bg, white text */
+.dark .msg-bubble.sent { background: #1f2937 !important; color: #ffffff !important; border: 1px solid rgba(255,255,255,0.05) !important; }
+
+/* Light mode (root): sent bubble = light bg, black text */
+:root .msg-bubble.sent { background: #e5e7eb !important; color: #000000 !important; border: 1px solid rgba(15,23,42,0.06) !important; }
+
+/* Ensure text inside sent bubble doesn't get overridden - NO BACKGROUNDS */
+.msg-bubble.sent * { color: inherit !important; background: transparent !important; }
+
+/* Scrollbar theme for chat */
+.community-chat-area .messages-container::-webkit-scrollbar { width: 10px; }
+.community-chat-area .messages-container::-webkit-scrollbar-track { background: transparent; }
+.community-chat-area .messages-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 8px; }
+.dark .community-chat-area .messages-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); }
+
+/* Member list: search and hover */
+.community-members-card .member-search { width:100%; padding:.5rem .6rem; border-radius: 8px; margin-bottom:.5rem; border:1px solid rgba(0,0,0,0.04); }
+.dark .community-members-card .member-search { border-color: rgba(255,255,255,0.04); background: rgba(255,255,255,0.02); color: #fff; }
+.community-member-row:hover { background: rgba(0,0,0,0.04); }
+.dark .community-member-row:hover { background: rgba(255,255,255,0.02); }
+
+/* Responsive: reduce avatar size on small screens */
+@media (max-width: 640px) {
+  .member-avatar, .msg-avatar { width:32px; height:32px; }
+  .msg-bubble { max-width: 84%; }
+}
+
+/* Stronger dark-mode overrides specifically for chat area to avoid accidental white backgrounds */
+.community-chat-area .card-bg { background: var(--card) !important; color: var(--text) !important; }
+.dark .community-chat-area { background: var(--card) !important; }
+.dark .community-chat-area .bg-white, .dark .community-chat-area .bg-gray-50, .dark .community-chat-area .bg-gray-100 { background: transparent !important; }
+.dark .community-chat-area .text-gray-900, .dark .community-chat-area .text-gray-800 { color: var(--text) !important; }
+.community-member-row { background: transparent; border-bottom: 1px solid rgba(255,255,255,0.03); }
+
+/* Ensure input areas in dark mode don't have white backgrounds */
+.dark .community-chat-area input, .dark .community-chat-area textarea, .dark .community-chat-area select {
+  background-color: rgba(255,255,255,0.02) !important;
+  color: #ffffff !important;
+}
+
+/* Buttons */
+.btn-primary { background: linear-gradient(90deg,#3b82f6,#06b6d4); color: #fff; border: none; transition: transform .12s ease, box-shadow .12s ease; }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(59,130,246,0.18); }
+.btn-secondary { background: rgba(255,255,255,0.04); color: #e6eef8; border: 1px solid rgba(255,255,255,0.04); transition: background .12s ease, transform .12s ease; }
+.msg-menu { z-index:50 }
+.msg-menu-btn { z-index:40 }
+.btn-secondary:hover { background: rgba(255,255,255,0.06); transform: translateY(-1px); }
+.btn-danger { background: rgba(220,38,38,0.12); color: #ffc7c7; border: 1px solid rgba(220,38,38,0.12); }
+
+/* Navbar icon color harmony */
+.nav-icon { color: #4b5563; }
+.dark .nav-icon { color: #e5e7eb !important; }
+
+/* Footer Instagram small polish */
+.footer-instagram img { filter: none; transition: filter .18s ease, transform .12s ease; }
+.dark .footer-instagram img { filter: drop-shadow(0 6px 18px rgba(139,92,246,0.12)) saturate(1.05) contrast(1.02); transform: translateY(0); }
+.footer-instagram:hover img { transform: translateY(-2px) scale(1.03); }
+.footer-instagram span { color: inherit; }
+.dark .footer-instagram span { color: #e6e6fa; }
+
+/* Smooth transitions for interactive elements */
+.community-members-card button, .community-chat-area button, .community-members-card a { transition: all .12s ease; }
+
+/* Heart like micro-interactions */
+.heart-pop { transition: transform .16s cubic-bezier(.2,.9,.3,1), color .12s ease; }
+.heart-pop.liked { transform: scale(1.16); filter: drop-shadow(0 6px 18px rgba(239,68,68,0.14)); }
+
+
+/* Sidebar advertisement card */
+.ad-card img { border-radius: 12px; }
+.ad-card h4 { color: var(--text); }
+.ad-card p { color: var(--muted); }
+.ad-card a { text-decoration: none; }
+.ad-card .najah-badge { font-size: 11px; color: var(--najah-primary); font-weight: 700; }
+
+/* Announcement box (system) */
+.announcement-box { border-left: 4px solid #fbbf24; padding: .6rem .9rem; border-radius: 12px; background: linear-gradient(90deg,#fffaf0,#fffdf6); }
+.dark .announcement-box { background: linear-gradient(90deg,#071022,#081726); border-left-color: rgba(255,200,60,0.12); color: var(--text); }
+
+@media (max-width: 1024px) {
+  /* hide the large ad on tablet/mobile to avoid layout issues */
+  .ad-card { display: none; }
+}
+
+/* Table dark-mode fixes */
+.card-bg table { width: 100%; border-collapse: collapse; }
+.card-bg th, .card-bg td { padding: 0.75rem 1rem; border-bottom: 1px solid rgba(0,0,0,0.04); }
+.dark .card-bg th, .dark .card-bg td { color: var(--text) !important; border-color: rgba(255,255,255,0.04) !important; }
+.dark table { background: transparent !important; }
+.dark .card-bg { background: var(--card) !important; }
+
+/* Strong dark-mode hover enforcement for table rows to avoid bright patches */
+.dark .card-bg table tbody tr { background-color: transparent !important; }
+.dark .card-bg table tbody tr td { background-color: transparent !important; }
+.dark .card-bg table tbody tr:hover { background-color: rgba(30,64,175,0.18) !important; color: var(--text) !important; }
+.dark .card-bg table tbody tr:hover td { background-color: transparent !important; }
+
+/* Ensure header hover remains subtle */
+.dark .card-bg thead th { background-color: rgba(255,255,255,0.02) !important; }
+
+
+/* Form controls dark-mode safety: prevent white inputs in dark theme */
+.dark input, .dark textarea, .dark select, .dark .form-input, .dark .form-control {
+  background: rgba(255,255,255,0.03) !important;
+  color: var(--text) !important;
+  border-color: rgba(255,255,255,0.06) !important;
+}
+.card-bg input, .card-bg textarea, .card-bg select { background: transparent !important; }
+
+/* Buttons in dark mode should contrast */
+.dark .btn, .dark button { color: var(--text) !important; }
+
+/* Ensure cards and tables don't keep literal white backgrounds */
+.dark .bg-white { background: var(--card) !important; color: var(--text) !important; }
+
+/* Ensure no white box glitch in chat bubbles */
+.msg-bubble span, .msg-bubble div {
+  background-color: transparent !important;
+}
+
+/* WhatsApp-inspired design */
+.bg-whatsapp-light { background-color: #efeae2; }
+.bg-whatsapp-dark { background-color: #111b21; }
+.sidebar-light { background-color: #ffffff; }
+.sidebar-dark { background-color: #202c33; }
+.msg-bubble-me-light { background-color: #d9fdd3; color: #000; }
+.msg-bubble-me-dark { background-color: #005c4b; color: #fff; }
+.msg-bubble-other-light { background-color: #ffffff; color: #000; }
+.msg-bubble-other-dark { background-color: #202c33; color: #fff; }
+
+/* OWNER visual enhancements */
+.owner-glow { 
+  animation: ownerGlow 2.6s ease-in-out infinite;
+}
+@keyframes ownerGlow {
+  0% { box-shadow: 0 6px 18px rgba(250,204,21,0.06); transform: translateY(0); }
+  50% { box-shadow: 0 10px 30px rgba(250,204,21,0.16); transform: translateY(-2px); }
+  100% { box-shadow: 0 6px 18px rgba(250,204,21,0.06); transform: translateY(0); }
+}
+
+/* Owner banner: lighter, airy golden banner optimized for dark-mode with bright shimmer */
+.owner-banner {
+  background: linear-gradient(90deg, #fffaf0 0%, #fff1c2 45%, #ffe08a 75%, #fff9df 100%);
+  position: relative;
+  overflow: hidden;
+}
+.dark .owner-banner {
+  /* dark regal banner with deep blue and subtle gold veins */
+  background: linear-gradient(90deg, #061226 0%, #082033 30%, #2b1905 70%, #3a2a06 100%);
+}
+.owner-banner::before {
+  content: '';
+  position: absolute;
+  top: -60%;
+  left: -40%;
+  width: 220%;
+  height: 220%;
+  background: linear-gradient(90deg, rgba(255,255,255,0.12), rgba(255,245,180,0.28), rgba(255,255,255,0.12));
+  transform: rotate(20deg);
+  animation: ownerShimmer 4s linear infinite;
+  mix-blend-mode: overlay;
+  opacity: 1;
+}
+@keyframes ownerShimmer {
+  0% { transform: translateX(-100%) rotate(20deg); }
+  100% { transform: translateX(100%) rotate(20deg); }
+}
+
+.dark .owner-banner::before {
+  background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,210,120,0.12), rgba(255,255,255,0.02));
+  opacity: 0.9;
+}
+
+.owner-banner-sparkles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle at 12% 18%, rgba(255,246,190,0.12) 0 2px, transparent 3px), radial-gradient(circle at 80% 30%, rgba(255,237,160,0.08) 0 2px, transparent 3px), radial-gradient(circle at 60% 70%, rgba(255,216,90,0.06) 0 3px, transparent 4px);
+  opacity: 0.95;
+  animation: ownerSparkle 8s linear infinite;
+}
+@keyframes ownerSparkle {
+  0% { transform: translateY(0) scale(1); opacity: .98 }
+  50% { transform: translateY(-8px) scale(1.03); opacity: .85 }
+  100% { transform: translateY(0) scale(1); opacity: .98 }
+}
+
+.owner-banner-crown { /* small crown+label on banner */
+  position: absolute;
+  top: 12px;
+  left: 16px;
+  z-index: 40;
+  transform-origin: center;
+  animation: ownerPulse 3s ease-in-out infinite;
+  backdrop-filter: blur(4px);
+  color: #382200;
+}
+.dark .owner-banner-crown { color: #ffd86b; background: rgba(0,0,0,0.18); }
+@keyframes ownerPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+.owner-crown { filter: drop-shadow(0 8px 28px rgba(255,200,60,0.18)); }
+.owner-frame {
+  border-radius: 9999px;
+  background: linear-gradient(90deg, rgba(255,250,230,0.02), rgba(255,250,230,0.03));
+  padding: .35rem;
+  box-shadow: 0 8px 28px rgba(255,196,50,0.06);
+  border: 2px solid rgba(250,204,21,0.18);
+}
+.dark .owner-frame {
+  background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,250,210,0.02));
+  border-color: rgba(250,204,21,0.22);
+  box-shadow: 0 8px 28px rgba(255,176,25,0.08);
+}
+.owner-label { border: 1px solid rgba(255,234,167,0.35); }
+.dark .owner-label { background: linear-gradient(90deg,#fef3c7,#fb923c); color: #4b2200 !important; }
+
+
+/* Avatar styles */
+.avatar { width: 48px; height: 48px; border-radius: 9999px; object-fit: cover; }
+.avatar-owner { border: 2px solid #FFD700; }
+
+/* Owner badge & crown (legendary dark-mode look) */
+.owner-crown {
+  width: 56px;
+  height: 56px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:9999px;
+  transform: rotate(-15deg);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6), 0 2px 8px rgba(99,102,241,0.08);
+  background: linear-gradient(90deg, #FFD54A 0%, #FF6A00 50%, #FFD54A 100%);
+  color: #111827;
+  border: 2px solid rgba(255,255,255,0.9);
+}
+
+/* Animated 'legendary' gradient in dark mode */
+@keyframes ownerGlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.dark .owner-crown {
+  background: linear-gradient(90deg, #1e293b 0%, #4338ca 25%, #8b5cf6 50%, #f59e0b 75%, #8b5cf6 100%);
+  background-size: 200% 200%;
+  animation: ownerGlow 4s linear infinite;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 12px 40px rgba(99,102,241,0.18), 0 6px 16px rgba(0,0,0,0.6), 0 0 18px rgba(139,92,246,0.18) inset;
+}
+
+.owner-label { 
+  display:inline-block;
+  font-weight:900;
+  letter-spacing: 0.6px;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  color: #7a5800;
+  background: linear-gradient(90deg,#fff3cd,#fff4e6);
+  border: 1px solid rgba(250, 194, 0, 0.15);
+  box-shadow: 0 6px 18px rgba(255,207,102,0.08);
+}
+
+/* Dark-mode owner label — darker base + animated glow */
+.dark .owner-label {
+  background: linear-gradient(90deg,#071124 0%, #081026 20%, #0b1220 100%);
+  color: #fff8d6;
+  border: none;
+  box-shadow: 0 8px 28px rgba(59,130,246,0.12), 0 0 18px rgba(245,158,11,0.06) inset;
+  background-size: 240% 240%;
+  animation: ownerGlow 6s linear infinite;
+  border: 1px solid rgba(255,255,255,0.03);
+}
+
+/* Chat layout */
+.chat-header { background-color: #ffffff; color: #000; }
+.chat-header-dark { background-color: #202c33; color: #fff; }
+.chat-footer { background-color: #ffffff; color: #000; }
+.chat-footer-dark { background-color: #202c33; color: #fff; }
+
+/* Sidebar */
+.sidebar-item { display: flex; align-items: center; gap: 1rem; padding: 0.5rem; border-radius: 0.5rem; }
+.sidebar-item:hover { background-color: rgba(255, 255, 255, 0.1); }
+.sidebar-item-light:hover { background-color: rgba(0, 0, 0, 0.05); }
+.sidebar-item-dark:hover { background-color: rgba(255, 255, 255, 0.1); }
+
+/* Message bubbles */
+.message-row { display: flex; align-items: flex-end; gap: 0.5rem; margin: 0.5rem 0; }
+.message-row-me { justify-content: flex-end; }
+.message-row-other { justify-content: flex-start; }
+
+/* Force dark hover for home 'قيم الموقع' button to be visible */
+.dark .home-rate-btn:hover {
+  background-color: #1e40af; /* blue-800 */
+  color: #ffffff;
+}
+
