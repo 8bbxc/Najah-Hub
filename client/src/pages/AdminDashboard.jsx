@@ -238,12 +238,12 @@ const AdminDashboard = () => {
 
     const setRole = async (userId, role) => {
         try {
-            await axios.put(`${API}/api/admin/users/${userId}/role`, { role }, config);
-            setUsers(users.map(u => (u.id || u._id) === userId ? { ...u, role } : u));
+            await axios.put(`${API_BASE}/api/admin/users/${userId}/role`, { role }, config);
+            setUsers(users.map(u => (String(u.id || u._id) === String(userId) ? { ...u, role } : u)));
             showToast('تم تحديث الرتبة بنجاح', 'success');
                 // if promoted to admin, open permissions modal to let master admin grant rights
                 if (role === 'admin') {
-                    const promoted = users.find(u => (u.id || u._id) === userId) || null;
+                    const promoted = users.find(u => (String(u.id || u._id) === String(userId))) || null;
                     if (promoted) openPermissionsModal(promoted);
                 }
         } catch (err) {
@@ -255,7 +255,7 @@ const AdminDashboard = () => {
         const newPassword = window.prompt('اكتب كلمة المرور الجديدة للمستخدم:');
         if (!newPassword) return;
         try {
-            await axios.put(`${API}/api/admin/users/${userId}/password`, { newPassword }, config);
+            await axios.put(`${API_BASE}/api/admin/users/${userId}/password`, { newPassword }, config);
             alert('تم تعيين كلمة المرور الجديدة');
         } catch (err) { alert('فشل تعيين كلمة المرور'); }
     };
@@ -282,8 +282,8 @@ const AdminDashboard = () => {
     const savePermissions = async () => {
         if (!permissionEditUser) return;
         try {
-            await axios.put(`${API}/api/admin/users/${permissionEditUser.id || permissionEditUser._id}/permissions`, { permissions: permissionForm }, config);
-            setUsers(users.map(u => (u.id || u._id) === (permissionEditUser.id || permissionEditUser._id) ? { ...u, permissions: permissionForm } : u));
+            await axios.put(`${API_BASE}/api/admin/users/${permissionEditUser.id || permissionEditUser._id}/permissions`, { permissions: permissionForm }, config);
+            setUsers(users.map(u => (String(u.id || u._id) === String(permissionEditUser.id || permissionEditUser._id)) ? { ...u, permissions: permissionForm } : u));
             setPermissionEditUser(null);
             alert('تم حفظ الصلاحيات');
         } catch (err) { showToast('فشل حفظ الصلاحيات', 'error'); }
@@ -300,7 +300,7 @@ const AdminDashboard = () => {
             // optimistic update
             setUsers(prev => prev.map(x => String(x.id || x._id) === idStr ? { ...x, isFeatured: newVal } : x));
 
-            const res = await axios.put(`${API}/api/admin/users/${userId}/feature`, { featured: newVal }, config);
+            const res = await axios.put(`${API_BASE}/api/admin/users/${userId}/feature`, { featured: newVal }, config);
             console.log('feature API response', res.data);
             // if server returns updated user, merge it (optional)
             if (res.data?.user) {
@@ -310,7 +310,7 @@ const AdminDashboard = () => {
         } catch (err) {
             console.error('toggleFeatured error', err);
             // rollback optimistic change
-            setUsers(prev => prev.map(x => (x.id || x._id) === userId ? { ...x, isFeatured: !x.isFeatured } : x));
+            setUsers(prev => prev.map(x => (String(x.id || x._id) === String(userId)) ? { ...x, isFeatured: !x.isFeatured } : x));
             showToast('فشل تغيير حالة الميزة', 'error');
         }
     };
@@ -324,16 +324,16 @@ const AdminDashboard = () => {
 
     const approveUser = async (id) => {
         try {
-            await axios.put(`${API}/api/admin/users/${id}/status`, { status: 'active' }, config);
-            setUsers(users.map(u => u.id === id ? { ...u, status: 'active' } : u));
+            await axios.put(`${API_BASE}/api/admin/users/${id}/status`, { status: 'active' }, config);
+            setUsers(users.map(u => (String(u.id || u._id) === String(id) ? { ...u, status: 'active' } : u)));
             showToast('تمت الموافقة على المستخدم', 'success');
         } catch (err) { showToast(err.response?.data?.message || err.message || 'فشل', 'error'); }
     };
 
     const rejectUser = async (id) => {
         try {
-            await axios.put(`${API}/api/admin/users/${id}/status`, { status: 'disabled' }, config);
-            setUsers(users.map(u => u.id === id ? { ...u, status: 'disabled' } : u));
+            await axios.put(`${API_BASE}/api/admin/users/${id}/status`, { status: 'disabled' }, config);
+            setUsers(users.map(u => (String(u.id || u._id) === String(id) ? { ...u, status: 'disabled' } : u)));
             showToast('تم رفض المستخدم', 'success');
         } catch (err) { showToast(err.response?.data?.message || err.message || 'فشل', 'error'); }
     };
@@ -357,7 +357,7 @@ const AdminDashboard = () => {
         if (!editingCommunity) return;
         try {
             const payload = { name: editingCommunity.name, description: editingCommunity.description, privacy: editingCommunity.privacy, batch: editingCommunity.batch };
-            const res = await axios.put(`${API}/api/communities/${editingCommunity.id}`, payload, config);
+            const res = await axios.put(`${API_BASE}/api/communities/${editingCommunity.id}`, payload, config);
             setCommunities(communities.map(cc => cc.id === editingCommunity.id ? res.data.community || { ...cc, ...editingCommunity } : cc));
             setEditingCommunity(null);
             alert('تم حفظ التغييرات');
