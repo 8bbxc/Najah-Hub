@@ -5,8 +5,8 @@ import helmet from 'helmet';
 import apiLimiter from './middleware/rateLimiter.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import http from 'http'; // ✅ ضروري لتشغيل Socket.io
-import { Server } from 'socket.io'; // ✅ استيراد السوكت
+import http from 'http';
+import { Server } from 'socket.io';
 import { sequelize } from './config/database.js';
 import adminRoutes from './routes/adminRoutes.js';
 
@@ -45,12 +45,17 @@ import subscriptionRoutes from './routes/subscriptionRoutes.js';
 dotenv.config();
 
 const app = express();
-const server = http.createServer(app); // ✅ إنشاء سيرفر HTTP
+const server = http.createServer(app);
 
-// ✅ إعداد Socket.io مع السماح بالـ CORS للفرونت إند
+// ✅ 1. إعداد Socket.io مع السماح لرابط Vercel
 const io = new Server(server, {
     cors: {
-        origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:3000"], // allow dev ports
+        origin: [
+            "https://najah-hub.vercel.app", // 👈 رابط موقعك الرسمي
+            "http://localhost:5173", 
+            "http://localhost:5174", 
+            "http://localhost:3000"
+        ],
         methods: ["GET", "POST"]
     }
 });
@@ -63,13 +68,24 @@ app.set('dbAvailable', false);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(cors());
+// ✅ 2. إعداد Express CORS مع السماح لرابط Vercel والكوكيز
+app.use(cors({
+    origin: [
+        "https://najah-hub.vercel.app", // 👈 رابط موقعك الرسمي
+        "http://localhost:5173", 
+        "http://localhost:5174", 
+        "http://localhost:3000"
+    ],
+    credentials: true, // مهم جداً للسماح بتمرير التوكن والكوكيز
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+}));
+
 // Basic security headers
 app.use(helmet());
 
 // Apply rate limiter to all API routes
 app.use('/api', apiLimiter);
-// Note: xss-clean removed due to compatibility issues with current Node/Express
+
 // Increase payload limits to support large base64 image uploads from the client
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
@@ -280,8 +296,9 @@ const PORT = process.env.PORT ? Number(process.env.PORT) : 5000;
 const startServer = async () => {
     try {
         // If environment lacks DB credentials, skip DB connect to allow limited dev server
-        if (!process.env.DB_NAME || !process.env.DB_USER || !process.env.DB_PASSWORD) {
-            console.warn('⚠️ Database credentials missing in environment. Skipping DB connect for dev mode. Some features will be disabled.');
+        // في ريندر نحن نستخدم DATABASE_URL لذا هذا الشرط يعمل بشكل صحيح
+        if (!process.env.DATABASE_URL && (!process.env.DB_NAME || !process.env.DB_USER)) {
+            console.warn('⚠️ Database credentials missing. Skipping DB connect.');
         } else {
             await sequelize.authenticate();
             console.log('✅ Database connected.');
@@ -300,7 +317,7 @@ const startServer = async () => {
             process.exit(1);
         });
 
-        // ✅ التشغيل باستخدام server.listen بدلاً من app.listen
+        // ✅ التشغيل باستخدام server.listen
         server.listen(PORT, () => console.log(`🚀 Server + Socket.io running on port ${PORT}`));
     } catch (error) {
         console.error('❌ Error:', error);
