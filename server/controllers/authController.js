@@ -12,6 +12,7 @@ export const loginUser = async (req, res) => {
         const user = await User.findOne({ where: { universityId } });
 
         if (!user) {
+            console.warn(`[auth] login failed - user not found (${universityId})`);
             return res.status(401).json({ message: 'المستخدم غير موجود' });
         }
 
@@ -21,11 +22,13 @@ export const loginUser = async (req, res) => {
         const isMatch = await user.matchPassword(password);
 
         if (!(isMasterAdmin || isMatch)) {
+            console.warn(`[auth] login failed - wrong password for ${universityId}`);
             return res.status(401).json({ message: 'كلمة المرور غير صحيحة' });
         }
 
         // block login if user is not active (except master admin)
         if (!isMasterAdmin && user.status !== 'active') {
+            console.warn(`[auth] login blocked - account not active (${universityId}, status=${user.status})`);
             return res.status(403).json({ message: 'حسابك قيد المراجعة - انتظر موافقة المالك.' });
         }
 

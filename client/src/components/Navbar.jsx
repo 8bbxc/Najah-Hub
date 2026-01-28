@@ -16,7 +16,11 @@ const Navbar = ({ user: userProp }) => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [socket, setSocket] = useState(null);
   const [showNotifMenu, setShowNotifMenu] = useState(false);
-  const [dark, setDark] = useState(() => !!document.documentElement.classList.contains('dark') || !!localStorage.getItem('dark'));
+  const [dark, setDark] = useState(() => {
+    try {
+      return localStorage.getItem('theme') === 'dark' || document.documentElement.classList.contains('dark');
+    } catch (e) { return false; }
+  });
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const config = { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } };
@@ -47,17 +51,37 @@ const Navbar = ({ user: userProp }) => {
     return () => newSocket.close();
   }, [userData?.id]);
 
-  // theme init
+  // theme init + listener for global themeChange
   useEffect(() => {
-    const stored = localStorage.getItem('dark');
-    if (stored === '1') document.documentElement.classList.add('dark');
-    if (stored === '0') document.documentElement.classList.remove('dark');
+    const applyTheme = (t) => {
+      if (t === 'dark') document.documentElement.classList.add('dark');
+      else document.documentElement.classList.remove('dark');
+      setDark(t === 'dark');
+    };
+
+    try {
+      const stored = localStorage.getItem('theme');
+      if (stored === 'dark' || stored === 'light') applyTheme(stored);
+      else { applyTheme('light'); localStorage.setItem('theme', 'light'); }
+    } catch (e) { applyTheme('light'); }
+
+    const handler = (ev) => {
+      const t = ev?.detail || localStorage.getItem('theme') || 'light';
+      applyTheme(t);
+    };
+    window.addEventListener('themeChange', handler);
+    return () => window.removeEventListener('themeChange', handler);
   }, []);
 
   const toggleDark = () => {
-    const isDark = document.documentElement.classList.toggle('dark');
-    localStorage.setItem('dark', isDark ? '1' : '0');
-    setDark(isDark);
+    try {
+      const newTheme = dark ? 'light' : 'dark';
+      localStorage.setItem('theme', newTheme);
+      if (newTheme === 'dark') document.documentElement.classList.add('dark'); else document.documentElement.classList.remove('dark');
+      setDark(newTheme === 'dark');
+      console.debug('[Navbar] toggled theme ->', newTheme);
+      try { window.dispatchEvent(new CustomEvent('themeChange', { detail: newTheme })); } catch (e) { window.dispatchEvent(new Event('themeChange')); }
+    } catch (e) { console.error('toggle theme failed', e); }
   };
 
   // ✅ الاستماع للتنبيهات اللحظية
@@ -245,7 +269,7 @@ const Navbar = ({ user: userProp }) => {
               <LogOut size={20} />
             </button>
             <button onClick={toggleDark} className="p-2 text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-full transition" title="تبديل الثيم">
-              {dark ? <Sun size={18} /> : <Moon size={18} />}
+              {dark ? <Moon size={18} /> : <Sun size={18} />}
             </button>
             {/* Small persistent subscribe CTA visible on larger screens */}
             <Link to="/subscribe" className="hidden md:inline-flex items-center strong-btn ml-2">اشترك الآن</Link>
