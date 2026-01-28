@@ -94,26 +94,30 @@ export default function AIChat() {
         </div>
 
         <div className="md:col-span-3 card-bg p-4 rounded-lg border flex flex-col">
-          <div ref={messagesRef} className="flex-1 overflow-y-auto mb-4 p-3 space-y-3 bg-chat-bg" style={{ maxHeight: '60vh' }}>
+          <div ref={messagesRef} className="flex-1 overflow-y-auto mb-4 p-3 space-y-3 bg-chat-bg flex-chat-center" style={{ maxHeight: '60vh' }}>
             {messages.map(m => (
-              <div key={m.id} className={`flex items-end ${m.role === 'assistant' ? 'justify-start' : 'justify-end'}`}>
-                {m.role === 'assistant' && (
-                  <img src={aiAvatar} alt="ai" className="w-8 h-8 rounded-full mr-2 msg-avatar" />
-                )}
+              <div key={m.id} className={`w-full flex items-end ${m.role === 'assistant' ? 'justify-start' : 'justify-end'}`}>
+                <div className={`flex items-end gap-3 w-full max-w-3xl px-2 ${m.role === 'assistant' ? 'justify-start' : 'justify-end'}`}>
 
-                <div className={`max-w-[70%] break-words p-3 rounded-lg shadow-sm aichat-msg ${m.role === 'assistant' ? 'assistant rounded-bl-none' : 'user rounded-br-none'}`}>
-                  <div className="text-sm aichat-text" style={{ whiteSpace: 'pre-wrap' }}>{m.content}</div>
-                  {m.attachments && m.attachments.length > 0 && (
-                    <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {m.attachments.map((a,i)=> <img key={i} src={a} className="w-full h-36 object-cover rounded" />)}
-                    </div>
+                  {m.role === 'assistant' && (
+                    <img src={aiAvatar} alt="ai" className="w-8 h-8 rounded-full mr-2 msg-avatar" />
                   )}
-                  <div className="text-xs aichat-time mt-1 text-right">{fmtTime(m.createdAt)}</div>
-                </div>
 
-                {m.role === 'user' && (
-                  <img src={userAvatar} alt="you" className="w-8 h-8 rounded-full ml-2 msg-avatar" />
-                )}
+                  <div className={`break-words p-3 rounded-lg shadow-sm aichat-msg ${m.role === 'assistant' ? 'assistant rounded-bl-none self-start' : 'user rounded-br-none self-end'}`}>
+                    <div className="text-sm aichat-text" style={{ whiteSpace: 'pre-wrap' }}>{m.content}</div>
+                    {m.attachments && m.attachments.length > 0 && (
+                      <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {m.attachments.map((a,i)=> <img key={i} src={a} className="w-full h-36 object-cover rounded" />)}
+                      </div>
+                    )}
+                    <div className="text-xs aichat-time mt-1 text-right">{fmtTime(m.createdAt)}</div>
+                  </div>
+
+                  {m.role === 'user' && (
+                    <img src={userAvatar} alt="you" className="w-8 h-8 rounded-full ml-2 msg-avatar" />
+                  )}
+
+                </div>
               </div>
             ))}
           </div>

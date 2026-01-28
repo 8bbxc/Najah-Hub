@@ -41,9 +41,9 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="max-w-md w-full card-bg rounded-xl shadow-lg p-8">
-        <h2 className="text-3xl font-bold text-center text-najah-primary mb-6">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-slate-950 px-4">
+      <div className="max-w-md w-full p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
+        <h2 className="text-3xl font-bold text-center text-najah-primary dark:text-white mb-6">
           إنشاء حساب جديد 🎓
         </h2>
 

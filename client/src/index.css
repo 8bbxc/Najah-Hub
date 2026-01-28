@@ -198,6 +198,22 @@ body {
 .aichat-input { width: 100%; padding: 0.6rem 0.9rem; border-radius: 999px; }
 .dark .aichat-input { background: #0b1220; color: #fff; border: 1px solid rgba(255,255,255,0.04); }
 
+/* Light-mode assistant bubble: subtle light styling */
+.aichat-msg.assistant { background: linear-gradient(90deg,#f3f4f6 0%, #eef2ff 100%); color: #0f172a; box-shadow: 0 4px 12px rgba(2,6,23,0.04); }
+.aichat-msg.user { background: linear-gradient(90deg,#06b6d4 0%, #3b82f6 100%); color: #fff; }
+
+/* Centered conversation layout: messages stack in center-column */
+.bg-chat-bg { background: #f8fafc; }
+.dark .bg-chat-bg { background: linear-gradient(180deg, #041026 0%, #071425 100%); }
+
+.flex-chat-center { display:flex; flex-direction:column; align-items:center; }
+.flex-chat-center .aichat-msg { max-width: 640px; }
+
+/* Robot login small animations */
+.robot-pupil { transition: transform .08s linear; transform-origin: center; }
+.robot-hand { transition: transform .25s ease; transform-origin: center; }
+
+
 
 /* Reverted aggressive global overrides that caused layout and color regressions.
    Keep theme rules minimal and component-scoped. If you need stricter
