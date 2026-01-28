@@ -98,28 +98,28 @@ export default function AIChat() {
             {messages.map(m => (
               <div key={m.id} className={`flex items-end ${m.role === 'assistant' ? 'justify-start' : 'justify-end'}`}>
                 {m.role === 'assistant' && (
-                  <img src={aiAvatar} alt="ai" className="w-8 h-8 rounded-full mr-2" />
+                  <img src={aiAvatar} alt="ai" className="w-8 h-8 rounded-full mr-2 msg-avatar" />
                 )}
 
-                <div className={`max-w-[70%] break-words p-3 rounded-lg shadow-sm ${m.role === 'assistant' ? 'bg-white text-gray-900 rounded-bl-none' : 'bg-green-100 text-gray-900 rounded-br-none'}`}>
-                  <div className="text-sm" style={{ whiteSpace: 'pre-wrap' }}>{m.content}</div>
+                <div className={`max-w-[70%] break-words p-3 rounded-lg shadow-sm aichat-msg ${m.role === 'assistant' ? 'assistant rounded-bl-none' : 'user rounded-br-none'}`}>
+                  <div className="text-sm aichat-text" style={{ whiteSpace: 'pre-wrap' }}>{m.content}</div>
                   {m.attachments && m.attachments.length > 0 && (
                     <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {m.attachments.map((a,i)=> <img key={i} src={a} className="w-full h-36 object-cover rounded" />)}
                     </div>
                   )}
-                  <div className="text-xs text-gray-400 mt-1 text-right">{fmtTime(m.createdAt)}</div>
+                  <div className="text-xs aichat-time mt-1 text-right">{fmtTime(m.createdAt)}</div>
                 </div>
 
                 {m.role === 'user' && (
-                  <img src={userAvatar} alt="you" className="w-8 h-8 rounded-full ml-2" />
+                  <img src={userAvatar} alt="you" className="w-8 h-8 rounded-full ml-2 msg-avatar" />
                 )}
               </div>
             ))}
           </div>
 
           <div className="flex items-center gap-2 p-3 border-t bg-white dark:bg-gray-800">
-            <button onClick={()=>fileRef.current?.click()} className="p-2 text-gray-500 hover:text-gray-700">
+            <button onClick={()=>fileRef.current?.click()} className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828L18 9.828V7h-2.828z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 13l6-6" opacity="0" />
@@ -138,7 +138,7 @@ export default function AIChat() {
                   {previews.map((p,i)=>(<img key={i} src={p} className="w-20 h-16 object-cover rounded" />))}
                 </div>
               )}
-              <input value={text} onChange={e=>setText(e.target.value)} className="w-full p-2 rounded border" placeholder="اسأل الذكاء الاصطناعي..." />
+              <input value={text} onChange={e=>setText(e.target.value)} className="w-full p-3 rounded-full border bg-white dark:bg-gray-900 dark:text-white placeholder-gray-400 aichat-input" placeholder="اسأل الذكاء الاصطناعي..." />
             </div>
             <button onClick={send} className="px-4 py-2 bg-najah-primary text-white rounded">إرسال</button>
           </div>
