@@ -41,6 +41,130 @@ body {
 .app-header { position: sticky; top: 0; z-index: 80; }
 .athkar-bar { position: sticky; top: 64px; z-index: 70; }
 
+/* Sidebar and chat specific theming */
+.sidebar, .aichat-list { background: var(--sidebar-bg) !important; border-color: rgba(0,0,0,0.06); color: var(--text) !important; }
+.sidebar { box-shadow: 0 8px 30px rgba(2,6,23,0.04); }
+.dark .sidebar { box-shadow: none; border: 1px solid rgba(255,255,255,0.04); }
+.sidebar .conv-btn, .aichat-list .conv-btn { background: transparent; color: var(--text); border-radius: .5rem; transition: background-color .2s ease, color .2s ease, box-shadow .3s ease; }
+.aichat-list .conv-btn:hover { background: rgba(0,0,0,0.04); }
+.aichat-list .conv-btn.active { background: var(--sidebar-active); color: var(--text); box-shadow: 0 8px 30px rgba(0,229,255,0.06); border: 1px solid rgba(0,229,255,0.08); }
+.dark .aichat-list .conv-btn.active { box-shadow: 0 12px 44px rgba(0,229,255,0.14); border: 1px solid rgba(0,229,255,0.18); }
+
+/* small neon indicator */
+.aichat-list .conv-btn.active::after { content: ''; display:block; width:4px; height:4px; border-radius:999px; background: linear-gradient(90deg,#00e5ff,#00a8ff); margin-top:6px; }
+
+
+.bg-chat-bg { background: var(--chat-bg) !important; color: var(--text) !important; }
+
+/* Message bubbles per theme */
+.aichat-msg.user { background: var(--user-bubble) !important; color: #ffffff !important; }
+.aichat-msg.assistant { background: var(--assistant-bubble) !important; color: var(--text) !important; }
+
+/* Cyber-Glassmorphism stylistic tweaks */
+.aichat-msg { transition: background-color .25s ease, color .25s ease, box-shadow .25s ease, border-color .25s ease; }
+
+/* Message entry animation (slide up + fade) */
+@keyframes slideUpFade {
+  0% { transform: translateY(8px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.animate-in.slide-in-from-bottom-2.fade-in.duration-300 { animation: slideUpFade .28s ease both; }
+
+/* Typing dots */
+@keyframes pulseDelay { 0% { opacity: .15; transform: translateY(0);} 50% { opacity: 1; transform: translateY(-3px); } 100% { opacity: .15; transform: translateY(0);} }
+.animate-pulse-delayed { animation: pulseDelay 1s infinite ease-in-out; }
+.animation-delay-150 { animation-delay: 0.15s; }
+.animation-delay-300 { animation-delay: 0.3s; }
+
+/* Typing bubble styling */
+.typing-bubble { background: rgba(255,255,255,0.06); color: var(--text); border: 1px solid rgba(255,255,255,0.04); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.dark .typing-bubble { background: rgba(255,255,255,0.03); border: 1px solid rgba(0,229,255,0.06); }
+
+/* AiAvatar core glow */
+.ai-core { display:inline-grid; place-items:center; border-radius:9999px; }
+.ai-core-inner { width:65%; height:65%; border-radius:9999px; background: linear-gradient(90deg,#7c3aed,#06b6d4); box-shadow: 0 6px 24px rgba(124,58,237,0.14), 0 0 30px rgba(6,182,212,0.06); animation: aiPulse 2s infinite ease-in-out; }
+@keyframes aiPulse { 0% { transform: scale(1); box-shadow: 0 6px 24px rgba(124,58,237,0.12), 0 0 18px rgba(6,182,212,0.04);} 50% { transform: scale(0.98); box-shadow: 0 10px 40px rgba(124,58,237,0.18), 0 0 44px rgba(6,182,212,0.12);} 100% { transform: scale(1); box-shadow: 0 6px 24px rgba(124,58,237,0.12), 0 0 18px rgba(6,182,212,0.04);} }
+
+/* Hover lifts */
+.aichat-list .conv-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(2,6,23,0.08); }
+.btn-send:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 30px rgba(3,105,161,0.12); }
+
+/* User bubble (right-aligned): neon glow in dark, solid blue in light */
+.aichat-msg.user { border: 1px solid rgba(0,0,0,0.04); }
+.dark .aichat-msg.user { background: linear-gradient(90deg,#0ea5ff 0%, #0077cc 100%) !important; color: #000 !important; box-shadow: 0 10px 40px rgba(14,165,255,0.12), 0 0 30px rgba(14,165,255,0.06); border: 1px solid rgba(14,165,255,0.12) !important; }
+
+/* Ensure message text is black in light mode (explicit) */
+.aichat-msg .aichat-text, .aichat-msg .aichat-time { color: #000 !important; }
+
+/* Assistant bubble (left-aligned): glass effect */
+.aichat-msg.assistant { background: rgba(255,255,255,0.7) !important; color: #0f172a !important; border: 1px solid rgba(15,23,42,0.06); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.dark .aichat-msg.assistant { background: rgba(255,255,255,0.03) !important; color: rgba(230,238,248,0.95) !important; border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(6px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.02); }
+
+/* Floating input capsule styles */
+.fixed .backdrop-blur-md { -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+
+/* Code editor styling (visible in both themes) */
+.code-pro { border-radius: 10px; overflow: hidden; }
+.code-pro .code-header { display:flex; align-items:center; justify-content:space-between; padding: .5rem .75rem; background: #1e1e1e; color: #e6eef8; }
+.code-pro .code-header .font-mono { font-family: 'Fira Code', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', monospace; }
+.code-pro .copy-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.02); padding: .25rem .5rem; border-radius: 8px; transition: transform .12s ease, background .12s ease; }
+.code-pro .copy-btn:hover { transform: translateY(-2px); background: rgba(255,255,255,0.05); }
+
+.code-pro .code-body { background: #1e1e1e; color: #e6eef8; padding: .85rem; font-family: 'Fira Code', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', monospace; font-size: .95rem; overflow:auto; }
+
+/* Ensure code container looks correct in dark mode as well */
+.dark .code-pro .code-header, .dark .code-pro .code-body { background: #1e1e1e; color: #e6eef8; border: none; }
+
+/* Make sure mono code inside messages preserves direction left-to-right */
+.aichat-text pre, .aichat-text code { direction: ltr; text-align: left; }
+
+/* Optional subtle circuit overlay on dark bg */
+.bg-chat-bg { position: relative; }
+.dark .bg-chat-bg::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle at 10% 10%, rgba(0,229,255,0.02), transparent 10%), linear-gradient(90deg, rgba(0,229,255,0.01), transparent 30%); pointer-events: none; mix-blend-mode: overlay; }
+
+
+
+
+/* Input field styles */
+.aichat-input { width: 100%; padding: 0.6rem 0.9rem; border-radius: 999px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text); }
+.aichat-input::placeholder { color: rgba(0,0,0,0.45); }
+.dark .aichat-input::placeholder { color: rgba(255,255,255,0.6); }
+.aichat-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 8px 24px rgba(0,229,255,0.08); }
+.dark .aichat-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 8px 28px rgba(0,229,255,0.12); }
+
+/* Specific override for AI composer input: force light background and black text in dark mode */
+.ai-input-override { background: #ffffff; color: #000 !important; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 8px 20px rgba(2,6,23,0.06); }
+.ai-input-override::placeholder { color: rgba(0,0,0,0.45); }
+.dark .ai-input-override { background: #f8fafc; color: #000 !important; border-color: rgba(0,0,0,0.08); box-shadow: 0 8px 30px rgba(2,6,23,0.08); }
+.dark .ai-input-override::placeholder { color: rgba(0,0,0,0.55); }
+
+/* Send button that stands out in both modes */
+.btn-send { background: var(--accent); color: #fff; padding: .55rem .9rem; border-radius: .75rem; border: none; box-shadow: 0 8px 28px rgba(3,105,161,0.12); }
+.dark .btn-send { box-shadow: 0 10px 34px rgba(0,0,0,0.5); }
+
+/* Code blocks and monospace preferences */
+.aichat-text pre, .aichat-text code { font-family: 'Fira Code', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace; direction: ltr; font-size: .94rem; background: rgba(0,0,0,0.04); padding: .25rem .5rem; border-radius: .4rem; }
+.dark .aichat-text pre, .dark .aichat-text code { background: rgba(255,255,255,0.03); }
+
+/* Icon accent */
+.nav-icon { color: var(--muted); }
+.dark .nav-icon { color: var(--accent); }
+
+/* Apply theme transition to elements likely to change */
+.card-bg, .aichat-list, .aichat-msg, .btn-send, .aichat-input, .bg-chat-bg { transition: background-color .3s ease, color .3s ease, border-color .3s ease, box-shadow .3s ease; }
+
+/* Provide subtle hover for active item in dark mode */
+.dark .aichat-list .conv-btn:hover { background: rgba(255,255,255,0.02); }
+
+/* Ensure messages and avatars remain visible and polished */
+.dark .msg-avatar { box-shadow: 0 2px 12px rgba(2,6,23,0.6); border: 1px solid rgba(255,255,255,0.03); }
+
+/* Accessibility: prefer strong contrast for main text */
+:root { color-scheme: light; }
+.dark { color-scheme: dark; }
+
+
 .app-header {
   background: var(--header) !important;
   border-color: rgba(255,255,255,0.04) !important;
@@ -188,8 +312,35 @@ body {
   border: 1px solid rgba(255,255,255,0.04);
 }
 
-/* Ensure text inside bubbles is visible and well-contrasted */
+/* Override: Make chat message content black with light backgrounds in dark-mode when requested */
 .dark .aichat-msg .aichat-text, .dark .aichat-msg .aichat-time { color: rgba(255,255,255,0.95) !important; }
+
+/* New: ensure messages (both assistant and user) can show black text and light bubble in dark mode */
+.dark .aichat-msg.assistant.light-bubble {
+  background: #f8fafc !important; /* very light */
+  color: #000 !important;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 8px 20px rgba(2,6,23,0.06);
+}
+.dark .aichat-msg.user.light-bubble {
+  background: #fff !important;
+  color: #000 !important;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 8px 20px rgba(2,6,23,0.06);
+}
+
+/* Utility to force black text inside any bubble when needed */
+.dark .aichat-msg.force-black .aichat-text, .dark .aichat-msg.force-black .aichat-time { color: #000 !important; }
+
+/* Default override: make all chat messages use light backgrounds + black text in Dark mode (per request) */
+.dark .aichat-msg { background: #f8fafc !important; color: #000 !important; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 8px 20px rgba(2,6,23,0.06); }
+.dark .aichat-msg .aichat-text, .dark .aichat-msg .aichat-time { color: #000 !important; }
+
+/* New AI-specific helpers for the AIChatNew page */
+.ai-gradient-btn { background: linear-gradient(90deg,#6366f1,#06b6d4); color: #000; }
+.ai-navbar-profile { background: linear-gradient(90deg,#111827,#0f172a); }
+
+
 
 /* Slight polish on avatars to stand out on dark backgrounds */
 .dark .msg-avatar { box-shadow: 0 2px 10px rgba(2,6,23,0.6); border: 1px solid rgba(255,255,255,0.03); }
@@ -533,6 +684,7 @@ body {
   z-index: 40;
   transform-origin: center;
   animation: ownerPulse 3s ease-in-out infinite;
+  -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
   color: #382200;
 }

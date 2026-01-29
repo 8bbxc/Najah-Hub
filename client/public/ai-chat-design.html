@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Chat — تصميم احترافي (Standalone)</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /*
+      High-End AI Chat Interface (Standalone)
+      - Default: Dark theme using :root variables
+      - Light theme: apply .light class on <body>
+    */
+
+    :root{
+      /* Palette (Dark baseline) */
+      --bg-primary: #0f1720;
+      --bg-secondary: #11151a;
+      --panel-bg: rgba(255,255,255,0.03);
+      --surface: #0b0f13;
+      --glass: rgba(255,255,255,0.04);
+      --text-primary: #e6eef8;
+      --text-muted: #9aa6b2;
+      --accent: #6ee7ff;
+      --accent-2: #8b5cf6;
+      --success: #22c55e;
+      --danger: #ff6b6b;
+      --border-subtle: rgba(255,255,255,0.06);
+      --card-shadow: 0 6px 18px rgba(2,6,23,0.6);
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --radius-sm: 8px;
+      --max-width: 1200px;
+
+      /* typography scale */
+      --h1: 20px;
+      --h2: 16px;
+      --base: 15px;
+      --mono: 'Cairo', 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Arabic", "Helvetica Neue", Arial;
+      --transition-fast: 160ms cubic-bezier(.2,.9,.3,1);
+      --transition-smooth: 300ms cubic-bezier(.2,.9,.3,1);
+    }
+
+    /* Light theme variables override */
+    body.light{
+      --bg-primary: #f6f9fc;
+      --bg-secondary: #ffffff;
+      --panel-bg: rgba(6,10,20,0.02);
+      --surface: #ffffff;
+      --glass: rgba(12,14,20,0.02);
+      --text-primary: #0b1220;
+      --text-muted: #4b5563;
+      --accent: #0ea5ff;
+      --accent-2: #7c3aed;
+      --border-subtle: rgba(12,18,24,0.06);
+      --card-shadow: 0 6px 24px rgba(14,17,24,0.06);
+    }
+
+    /* Global layout & reset */
+    * { box-sizing: border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: var(--mono);
+      background: linear-gradient(180deg, var(--bg-primary), var(--bg-secondary));
+      color: var(--text-primary);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      transition: background var(--transition-smooth), color var(--transition-smooth);
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      padding:28px;
+    }
+
+    /* Page container */
+    .app {
+      width:100%;
+      max-width: var(--max-width);
+      display:grid;
+      grid-template-rows: auto 1fr;
+      gap:20px;
+    }
+
+    /* Top Navbar */
+    .navbar {
+      position:sticky;
+      top:28px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0));
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      border-radius: calc(var(--radius-lg));
+      border: 1px solid var(--border-subtle);
+      padding:12px 18px;
+      display:flex;
+      align-items:center;
+      gap:16px;
+      box-shadow: var(--card-shadow);
+      z-index:50;
+    }
+    .brand {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      flex:0 0 auto;
+    }
+    .logo {
+      width:44px; height:44px; border-radius:10px;
+      display:flex; align-items:center; justify-content:center;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      color:#0b1220; font-weight:700; font-size:18px;
+      box-shadow: 0 6px 18px rgba(99,102,241,0.12);
+    }
+    .brand h1{ margin:0; font-size:var(--h1); font-weight:700; letter-spacing:-0.01em; }
+    .nav-actions{ display:flex; gap:10px; margin-inline-start:auto; align-items:center; }
+    .nav-links{ display:flex; gap:12px; align-items:center; }
+    .nav-links a{ color:var(--text-muted); text-decoration:none; padding:8px 10px; border-radius:8px; transition: all var(--transition-fast); font-weight:600; }
+    .nav-links a:hover{ color:var(--text-primary); background:var(--glass); }
+
+    .btn { border:0; padding:10px 12px; border-radius:10px; cursor:pointer; font-weight:700; font-size:14px; display:inline-flex; align-items:center; gap:8px; transition: transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast); }
+    .btn:active{ transform:translateY(1px); }
+    .btn-subscribe{ background: linear-gradient(90deg,var(--accent),var(--accent-2)); color: #031025; box-shadow: 0 8px 30px rgba(99,102,241,0.12); }
+    .icon-btn{ background:transparent; color:var(--text-muted); padding:8px; border-radius:10px; }
+    .icon-btn:hover{ color:var(--text-primary); background:var(--glass); }
+
+    /* Main layout: content + sidebar */
+    .main { display:grid; grid-template-columns: 1fr 360px; gap:20px; align-items:start; width:100%; }
+
+    /* Chat panel */
+    .chat-panel { border-radius: var(--radius-lg); background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid var(--border-subtle); padding:20px; box-shadow: var(--card-shadow); min-height: 64vh; display:flex; flex-direction:column; overflow:hidden; }
+    .chat-header{ display:flex; gap:12px; align-items:center; margin-bottom:12px; }
+    .chat-title{ font-weight:700; font-size:16px; }
+    .chat-sub{ color:var(--text-muted); font-size:13px; margin-top:2px; }
+
+    /* Chat history */
+    .history { flex:1 1 auto; overflow:auto; padding-right:6px; display:flex; flex-direction:column; gap:14px; scroll-behavior:smooth; }
+
+    /* Message bubble */
+    .message { display:flex; gap:12px; align-items:flex-end; transition: transform var(--transition-fast), opacity var(--transition-fast); opacity:0; transform: translateY(8px); animation: appear 360ms cubic-bezier(.2,.9,.3,1) forwards; }
+    @keyframes appear { to { opacity:1; transform:translateY(0); } }
+
+    .message.user{ align-self:flex-end; gap:10px; }
+    .message .avatar { width:40px; height:40px; border-radius:10px; flex:0 0 auto; display:flex; align-items:center; justify-content:center; font-weight:700; background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02)); color:var(--accent); }
+    .bubble { max-width:80%; padding:12px 14px; border-radius:12px; background:var(--panel-bg); border:1px solid rgba(255,255,255,0.02); color:var(--text-primary); box-shadow: 0 6px 18px rgba(2,6,23,0.4); font-size:var(--base); line-height:1.45; }
+
+    .message.user .bubble { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); color:var(--text-primary); border-radius: 14px 14px 6px 14px; box-shadow: 0 8px 30px rgba(2,6,23,0.45); }
+
+    .message.ai .bubble{ background: linear-gradient(180deg, rgba(13,18,25,0.6), rgba(10,13,17,0.5)); border-radius: 14px 14px 14px 6px; border-left: 3px solid var(--accent); color:var(--text-primary); position:relative; overflow:hidden; }
+
+    /* Code block style inside bubble */
+    .bubble pre { margin:0; padding:12px; border-radius:8px; background: linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.06)); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size:13px; color: #e6eef8; overflow:auto; border:1px solid rgba(255,255,255,0.02); }
+
+    /* Floating input area */
+    .composer { position: sticky; bottom:0; margin-top:14px; display:flex; align-items:center; justify-content:center; background:transparent; padding-top:14px; }
+    .composer-inner{ width:100%; max-width:980px; display:flex; gap:12px; }
+    .input { flex:1 1 auto; display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--surface); border-radius:12px; border:1px solid var(--border-subtle); box-shadow: inset 0 -1px 0 rgba(255,255,255,0.01); }
+    .input input{ border:0; outline:0; background:transparent; color:var(--text-primary); font-size:15px; width:100%; padding:8px 6px; direction: rtl; }
+    .input .attach, .send-btn { display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:10px; cursor:pointer; background:transparent; border:0; color:var(--text-muted); }
+    .send-btn{ background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#031025; width:52px; height:44px; border-radius:12px; font-weight:700; }
+
+    /* Sidebar - conversation archive */
+    .sidebar { border-radius: var(--radius-md); background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:14px; border:1px solid var(--border-subtle); box-shadow: var(--card-shadow); min-height:64vh; display:flex; flex-direction:column; gap:12px; }
+    .sidebar h3{ margin:0; font-size:15px; font-weight:700; color:var(--text-primary); }
+    .archive-list{ display:flex; flex-direction:column; gap:8px; overflow:auto; padding-top:6px; }
+
+    .card{ display:flex; gap:12px; align-items:center; padding:12px; border-radius:10px; background: linear-gradient(180deg, rgba(255,255,255,0.012), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.02); transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast); position:relative; }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(2,6,23,0.45); }
+    .card .meta { flex:1; display:flex; flex-direction:column; gap:2px; }
+    .card .meta .title { font-weight:700; font-size:14px; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow: ellipsis; max-width:200px; }
+    .card .meta .snippet { font-size:13px; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow: ellipsis; max-width:220px; }
+    .card .time { font-size:12px; color:var(--text-muted); min-width:86px; text-align:center; }
+
+    .card .mini{ width:44px; height:44px; border-radius:8px; display:grid;place-items:center; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); color:var(--accent); font-weight:700; }
+
+    /* Hover-only delete */
+    .card .actions { position:absolute; inset-inline-end:12px; top:12px; display:flex; gap:8px; opacity:0; transition: opacity var(--transition-fast); }
+    .card:hover .actions{ opacity:1; }
+    .icon-subtle { width:36px; height:36px; border-radius:8px; display:grid;place-items:center; color:var(--text-muted); cursor:pointer; }
+    .icon-subtle:hover{ background:var(--glass); color:var(--text-primary); }
+
+    /* Mobile responsive */
+    @media (max-width: 980px){
+      .main{ grid-template-columns: 1fr; }
+      .sidebar{ position:fixed; right:0; top:0; bottom:0; width:320px; transform: translateX(110%); transition: transform var(--transition-smooth); z-index:60; padding:24px; }
+      .sidebar.open{ transform: translateX(0); box-shadow: 0 30px 80px rgba(2,6,23,0.6); }
+      .navbar{ position:sticky; top:18px; }
+      .composer-inner{ max-width:100%; }
+      body[data-show-overlay="true"]::after{ content:""; position:fixed; inset:0; backdrop-filter: blur(6px); background: linear-gradient(180deg, rgba(6,8,12,0.4), rgba(6,8,12,0.55)); z-index:50; }
+    }
+
+    /* Small UI details */
+    .muted { color:var(--text-muted); font-size:13px; }
+    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+  </style>
+</head>
+<body>
+
+  <div class="app" role="application" aria-label="AI Chat Interface">
+    <!-- Navbar -->
+    <header class="navbar" role="banner">
+      <div class="brand" aria-hidden="false">
+        <div class="logo">AH</div>
+        <div>
+          <h1>Najah AI</h1>
+          <div class="muted">مساعد الذكاء الاصطناعي — واجهة دردشة</div>
+        </div>
+      </div>
+
+      <nav class="nav-links" aria-label="الرابط">
+        <a href="#" title="الصفحة الرئيسية">الصفحة الرئيسية</a>
+        <a href="#" title="المجتمع">المجتمع</a>
+        <a href="#" title="الموارد">الموارد</a>
+      </nav>
+
+      <div class="nav-actions" role="toolbar" aria-label="أدوات">
+        <button class="icon-btn" id="sidebar-toggle" aria-label="عرض الأرشيف">
+          <!-- Archive icon -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 7h18v2H3V7zm2 3h14v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V10z" fill="currentColor"/></svg>
+        </button>
+
+        <button class="btn btn-subscribe" title="Subscribe" aria-label="اشترك">
+          اشترك
+        </button>
+
+        <button class="icon-btn" id="theme-toggle" aria-label="تبديل الثيم">
+          <!-- Theme icon -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+
+        <button class="icon-btn" title="اشعارات" aria-label="الإشعارات">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14V11a6 6 0 1 0-12 0v3c0 .386-.149.76-.405 1.045L4 17h5m2 0v1a3 3 0 1 0 6 0v-1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+
+        <button class="icon-btn" title="الملف الشخصي" aria-label="الملف الشخصي">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 12c2.7 0 4.5-2.1 4.5-4.5S14.7 3 12 3 7.5 5.1 7.5 7.5 9.3 12 12 12zm0 2.3c-3.1 0-9.3 1.6-9.3 4.8V22h18.6v-2.9c0-3.2-6.2-4.8-9.3-4.8z" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="main" role="main">
+      <!-- Chat -->
+      <section class="chat-panel" aria-labelledby="chat-heading">
+        <div class="chat-header">
+          <div>
+            <div class="chat-title" id="chat-heading">المحادثة</div>
+            <div class="chat-sub">هنا يظهر سجل المحادثة — يمكنك كتابة سؤال وسيتفاعل المساعد</div>
+          </div>
+          <div style="margin-inline-start:auto" class="muted">وضع افتراضي: مظلم</div>
+        </div>
+
+        <div class="history" id="history" role="log" aria-live="polite">
+          <!-- AI message -->
+          <div class="message ai">
+            <div class="avatar" aria-hidden="true">AI</div>
+            <div class="bubble">
+              مرحبًا! كيف أستطيع مساعدتك اليوم؟
+            </div>
+          </div>
+
+          <!-- User message -->
+          <div class="message user">
+            <div class="bubble">
+              أريد تصميم واجهة دردشة احترافية لمنتجي.
+            </div>
+            <div class="avatar" aria-hidden="true">أ</div>
+          </div>
+
+          <!-- AI code example -->
+          <div class="message ai">
+            <div class="avatar">AI</div>
+            <div class="bubble">
+              إليك مثالًا على اقتراح واجهة بسيطة:
+              <pre><code>const prompt = "صِف واجهة دردشة حديثة";</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Composer (floating input) -->
+        <div class="composer" aria-label="منطقة الإدخال">
+          <div class="composer-inner">
+            <div class="input" role="search">
+              <button class="attach" title="إرفاق ملف" aria-label="إرفاق ملف">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21.44 11.05L12.78 19.7a5 5 0 0 1-7.07 0 5 5 0 0 1 0-7.07l8.66-8.66a3.5 3.5 0 0 1 4.95 4.95l-8.66 8.66" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <input id="message-input" placeholder="اكتب رسالتك هنا..." aria-label="رسالتك" />
+              <button class="send-btn" id="send" aria-label="إرسال">إرسال</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sidebar (Archive) -->
+      <aside class="sidebar" id="sidebar" aria-label="أرشيف المحادثات">
+        <h3>أرشيف المحادثات</h3>
+        <div class="archive-list">
+          <article class="card" role="article" tabindex="0">
+            <div class="mini">💬</div>
+            <div class="meta">
+              <div class="title">محادثة: تجهيز خطة إطلاق المنتج</div>
+              <div class="snippet">ملاحظة: أفكار للخط الزمني والتسويق...</div>
+            </div>
+            <div class="time">منذ ساعتين</div>
+            <div class="actions">
+              <div class="icon-subtle" title="حذف" role="button" aria-label="حذف">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6M10 6V4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+          </article>
+
+          <article class="card" role="article" tabindex="0">
+            <div class="mini">🤖</div>
+            <div class="meta">
+              <div class="title">محادثة: استغلال الذكاء الاصطناعي</div>
+              <div class="snippet">مختصر: أفكار لدمج نماذج اللغات في المنتج...</div>
+            </div>
+            <div class="time">منذ 3 أيام</div>
+            <div class="actions">
+              <div class="icon-subtle" title="حذف" role="button" aria-label="حذف">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6M10 6V4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+          </article>
+
+          <article class="card" role="article" tabindex="0">
+            <div class="mini">📝</div>
+            <div class="meta">
+              <div class="title">محادثة: ملاحظات المستخدم</div>
+              <div class="snippet">تضمين الملاحظات لتحسين واجهة المستخدم...</div>
+            </div>
+            <div class="time">منذ أسبوع</div>
+            <div class="actions">
+              <div class="icon-subtle" title="حذف" role="button" aria-label="حذف">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6M10 6V4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+          </article>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    // Theme toggle & persistence
+    const themeBtn = document.getElementById('theme-toggle');
+    const body = document.body;
+    const SIDEBAR = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sendBtn = document.getElementById('send');
+    const messageInput = document.getElementById('message-input');
+    const history = document.getElementById('history');
+
+    // initialize theme from localStorage or prefer dark default
+    const stored = localStorage.getItem('theme');
+    if(stored === 'light') body.classList.add('light');
+
+    themeBtn.addEventListener('click', () => {
+      body.classList.toggle('light');
+      localStorage.setItem('theme', body.classList.contains('light') ? 'light' : 'dark');
+    });
+
+    // Sidebar toggle behavior (mobile)
+    sidebarToggle.addEventListener('click', () => {
+      const isOpen = SIDEBAR.classList.toggle('open');
+      document.body.dataset.showOverlay = isOpen ? 'true' : 'false';
+    });
+    // close sidebar when clicking overlay on mobile
+    window.addEventListener('click', (e) => {
+      const overlayOpen = document.body.dataset.showOverlay === 'true';
+      if (!overlayOpen) return;
+      if (!SIDEBAR.contains(e.target) && !sidebarToggle.contains(e.target)) {
+        SIDEBAR.classList.remove('open');
+        document.body.dataset.showOverlay = 'false';
+      }
+    });
+
+    // Message send flow (demo)
+    function appendMessage({who='user', text='', code=false}){
+      const msg = document.createElement('div');
+      msg.className = 'message ' + (who === 'ai' ? 'ai' : 'user');
+      msg.innerHTML = `
+        <div class="avatar">${who === 'ai' ? 'AI' : 'أ'}</div>
+        <div class="bubble">${ code ? `<pre><code>${escapeHtml(text)}</code></pre>` : escapeHtml(text) }</div>
+      `;
+      history.appendChild(msg);
+      history.scrollTop = history.scrollHeight;
+      msg.scrollIntoView({behavior:'smooth', block:'end'});
+    }
+
+    function escapeHtml(unsafe){
+      return unsafe.replace(/[&<"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','"':'&quot;',"'":'&#039;'})[m]; });
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') sendMessage(); });
+
+    function sendMessage(){
+      const text = messageInput.value.trim();
+      if(!text) return;
+      appendMessage({who:'user', text});
+      messageInput.value = '';
+      setTimeout(() => {
+        appendMessage({who:'ai', text:'تلقيت رسالتك: ' + text});
+      }, 700);
+    }
+
+    window.addEventListener('resize', () => {
+      if(window.innerWidth > 980){
+        SIDEBAR.classList.remove('open');
+        document.body.dataset.showOverlay = 'false';
+      }
+    });
+  </script>
+</body>
+</html>

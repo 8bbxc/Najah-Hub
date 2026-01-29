@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { LogOut, User, Home, Menu, UserCircle, Bell, X, Moon, Sun, Settings as SettingsIcon, Cpu } from 'lucide-react';
 import AthkarBar from './AthkarBar';
 import { useState, useEffect } from 'react';
@@ -22,6 +22,18 @@ const Navbar = ({ user: userProp }) => {
     } catch (e) { return false; }
   });
   const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
+  const [navLoading, setNavLoading] = useState(false);
+  const [loadingPath, setLoadingPath] = useState(null);
+
+  useEffect(() => {
+    // clear loading indicator after route change (keeps bar visible briefly for smoothness)
+    if (navLoading) {
+      const t = setTimeout(() => { setNavLoading(false); setLoadingPath(null); }, 320);
+      return () => clearTimeout(t);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
 
   const config = { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } };
 
@@ -159,15 +171,16 @@ const Navbar = ({ user: userProp }) => {
 
   return (
     <>
-    <nav className="sticky top-0 z-50 app-header border-b">
+    <nav className={`sticky top-0 z-50 app-header border-b ${navLoading ? 'loading' : ''}`} >
       <div className="max-w-7xl mx-auto px-4 font-sans">
         <div className="flex justify-between items-center h-16">
           
           {/* الشعار */}
-          <Link to="/home" className="flex items-center gap-2">
+          <NavLink to="/home" onClick={()=>{ setNavLoading(true); setLoadingPath('/home'); }} className={`flex items-center gap-2 nav-hover nav-title nav-link ${loadingPath === '/home' ? 'is-loading' : ''}`}>
             <img src="/najah-hub-icon.png" alt="Najah Hub" className="h-10 w-10 rounded-md shadow-sm" />
-            <span className="text-2xl font-bold text-gray-800 hidden md:block">Najah Hub</span>
-          </Link>
+            <span className="text-2xl font-bold text-gray-800 hidden md:block title-text link-label">Najah Hub</span>
+            <span className="link-loader" />
+          </NavLink>
 
           {/* زر الهامبرغر للهواتف */}
           <button onClick={() => setMobileOpen(s => !s)} className="md:hidden p-2 text-gray-600 mr-2" aria-label="menu-toggle">
@@ -176,25 +189,30 @@ const Navbar = ({ user: userProp }) => {
 
           {/* روابط التنقل */}
           <div className="hidden md:flex items-center gap-8">
-            <Link to="/home" className="flex items-center gap-2 text-gray-600 hover:text-najah-primary transition font-medium px-2 py-1 rounded hover:bg-blue-900 hover:bg-opacity-40 dark:hover:bg-blue-700 dark:hover:bg-opacity-40 dark:hover:text-white">
-              <Home size={20} className="nav-icon" /> <span>الرئيسية</span>
-            </Link>
+            <NavLink to="/home" onClick={()=>{ setNavLoading(true); setLoadingPath('/home'); }} className={`flex items-center gap-2 text-gray-600 nav-hover nav-link hover:text-najah-primary transition font-medium px-2 py-1 rounded hover:bg-blue-900 hover:bg-opacity-40 dark:hover:bg-blue-700 dark:hover:bg-opacity-40 dark:hover:text-white ${loadingPath === '/home' ? 'is-loading' : ''}`}>
+              <Home size={20} className="nav-icon" /> <span className="link-label">الرئيسية</span>
+              <span className="link-loader" />
+            </NavLink>
             
-            <Link to={`/profile/${userData?.id}`} className="flex items-center gap-2 text-gray-800 hover:text-najah-primary transition font-medium px-2 py-1 rounded hover:bg-blue-900 hover:bg-opacity-40 dark:hover:bg-blue-700 dark:hover:bg-opacity-40 dark:hover:text-white">
-              <User size={20} /> <span>ملفي الشخصي</span>
-            </Link>
+            <NavLink to={`/profile/${userData?.id}`} onClick={()=>{ setNavLoading(true); setLoadingPath(`/profile/${userData?.id}`); }} className={`flex items-center gap-2 text-gray-800 nav-hover nav-link hover:text-najah-primary transition font-medium px-2 py-1 rounded hover:bg-blue-900 hover:bg-opacity-40 dark:hover:bg-blue-700 dark:hover:bg-opacity-40 dark:hover:text-white ${loadingPath === `/profile/${userData?.id}` ? 'is-loading' : ''}`}>
+              <User size={20} /> <span className="link-label">ملفي الشخصي</span>
+              <span className="link-loader" />
+            </NavLink>
 
-            <Link to="/communities" className="flex items-center gap-2 text-gray-800 hover:text-najah-primary transition font-medium px-2 py-1 rounded hover:bg-blue-900 hover:bg-opacity-40 dark:hover:bg-blue-700 dark:hover:bg-opacity-40 dark:hover:text-white">
-              <Menu size={20} /> <span>المجتمعات</span>
-            </Link>
+            <NavLink to="/communities" onClick={()=>{ setNavLoading(true); setLoadingPath('/communities'); }} className={`flex items-center gap-2 text-gray-800 nav-hover nav-link hover:text-najah-primary transition font-medium px-2 py-1 rounded hover:bg-blue-900 hover:bg-opacity-40 dark:hover:bg-blue-700 dark:hover:bg-opacity-40 dark:hover:text-white ${loadingPath === '/communities' ? 'is-loading' : ''}`}>
+              <Menu size={20} /> <span className="link-label">المجتمعات</span>
+              <span className="link-loader" />
+            </NavLink>
 
-            <Link to="/ai" className="flex items-center gap-2 text-gray-800 hover:text-najah-primary transition font-medium px-2 py-1 rounded hover:bg-blue-900 hover:bg-opacity-40 dark:hover:bg-blue-700 dark:hover:bg-opacity-40 dark:hover:text-white">
-              <Cpu size={18} /> <span>الذكاء</span>
-            </Link>
+            <NavLink to="/ai" onClick={()=>{ setNavLoading(true); setLoadingPath('/ai'); }} className={`flex items-center gap-2 text-gray-800 nav-hover nav-link hover:text-najah-primary transition font-medium px-2 py-1 rounded hover:bg-blue-900 hover:bg-opacity-40 dark:hover:bg-blue-700 dark:hover:bg-opacity-40 dark:hover:text-white ${loadingPath === '/ai' ? 'is-loading' : ''}`}>
+              <Cpu size={18} /> <span className="link-label">الذكاء</span>
+              <span className="link-loader" />
+            </NavLink>
 
-            <Link to="/settings" className="flex items-center gap-2 text-gray-800 hover:text-najah-primary transition font-medium px-2 py-1 rounded hover:bg-blue-900 hover:bg-opacity-40 dark:hover:bg-blue-700 dark:hover:bg-opacity-40 dark:hover:text-white">
-              <SettingsIcon size={20} /> <span>الإعدادات</span>
-            </Link>
+            <NavLink to="/settings" onClick={()=>{ setNavLoading(true); setLoadingPath('/settings'); }} className={`flex items-center gap-2 text-gray-800 nav-hover nav-link hover:text-najah-primary transition font-medium px-2 py-1 rounded hover:bg-blue-900 hover:bg-opacity-40 dark:hover:bg-blue-700 dark:hover:bg-opacity-40 dark:hover:text-white ${loadingPath === '/settings' ? 'is-loading' : ''}`}>
+              <SettingsIcon size={20} /> <span className="link-label">الإعدادات</span>
+              <span className="link-loader" />
+            </NavLink>
           </div>
 
             <div className="flex items-center gap-2 md:gap-4">
@@ -202,7 +220,7 @@ const Navbar = ({ user: userProp }) => {
             <div className="relative">
               <button 
                 onClick={toggleNotifications}
-                className={`p-2 rounded-full transition relative ${showNotifMenu ? 'bg-gray-100 text-najah-primary' : 'text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}`}
+                className={`p-2 rounded-full transition relative nav-hover ${showNotifMenu ? 'bg-gray-100 text-najah-primary' : 'text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}`}
               >
                 <Bell size={24} />
                 {unreadCount > 0 && (
@@ -255,7 +273,7 @@ const Navbar = ({ user: userProp }) => {
             </div>
             
             {/* ✅ الصورة الشخصية (ثابتة وقوية) */}
-            <Link to={`/profile/${userData?.id}`} className="w-10 h-10 rounded-full border-2 border-gray-100 overflow-hidden hover:border-najah-primary transition bg-gray-100 flex items-center justify-center shadow-inner group">
+            <NavLink to={`/profile/${userData?.id}`} onClick={()=>{ setNavLoading(true); setLoadingPath(`/profile/${userData?.id}`); }} className="w-10 h-10 rounded-full border-2 border-gray-100 overflow-hidden hover:border-najah-primary transition bg-gray-100 flex items-center justify-center shadow-inner group nav-hover">
               {userData?.avatar ? (
                 <img src={userData.avatar} alt="avatar" className="w-full h-full object-cover group-hover:scale-110 transition duration-300" />
               ) : (
@@ -263,29 +281,83 @@ const Navbar = ({ user: userProp }) => {
                   <UserCircle size={28} />
                 </div>
               )}
-            </Link>
+            </NavLink>
             
-            <button onClick={handleLogout} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition" title="تسجيل الخروج">
+            <button onClick={handleLogout} className="p-2 text-gray-400 nav-hover hover:text-red-500 hover:bg-red-50 rounded-full transition" title="تسجيل الخروج">
               <LogOut size={20} />
             </button>
-            <button onClick={toggleDark} className="p-2 text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-full transition" title="تبديل الثيم">
+            <button onClick={toggleDark} className="p-2 text-gray-400 nav-hover hover:bg-gray-50 dark:hover:bg-gray-700 rounded-full transition" title="تبديل الثيم">
               {dark ? <Moon size={18} /> : <Sun size={18} />}
             </button>
             {/* Small persistent subscribe CTA visible on larger screens */}
-            <Link to="/subscribe" className="hidden md:inline-flex items-center strong-btn ml-2">اشترك الآن</Link>
+            <NavLink to="/subscribe" onClick={()=>{ setNavLoading(true); setLoadingPath('/subscribe'); }} className={`hidden md:inline-flex items-center strong-btn ml-2 nav-hover nav-link ${loadingPath === '/subscribe' ? 'is-loading' : ''}`}><span className="link-label">اشترك الآن</span><span className="link-loader" /></NavLink>
           </div>
         </div>
       </div>
     </nav>
+    <style>{`
+      /* color vars — brighter and more visible */
+      .app-header { position: relative; --navbar-accent: #60e1f3; }
+      .dark .app-header { --navbar-accent: #60a5fa; }
+
+      .nav-hover { transition: box-shadow .25s, transform .18s, color .18s; }
+      .nav-hover:hover { transform: translateY(-2px); }
+
+      .nav-link { position: relative; }
+      .link-label { position: relative; display: inline-block; transition: color .18s; }
+      /* color only on hover/active */
+      .nav-link:hover .link-label, .nav-link.is-loading .link-label, .nav-link[aria-current="page"] .link-label { color: var(--navbar-accent); }
+
+      /* full-width underline under the entire link (includes icon) */
+      .nav-link::after { content: ''; position: absolute; left: 0; right: 0; bottom: -6px; height: 3px; width: 0%; background: var(--navbar-accent); border-radius: 3px; transform-origin: left; transition: width .28s cubic-bezier(.2,.9,.2,1), opacity .15s; opacity: 0; pointer-events:none; }
+      .nav-link:hover::after, .nav-link.is-loading::after, .nav-link[aria-current="page"]::after { width: 100%; opacity: 1; }
+      /* ensure logo/title doesn't get the underline */
+      .nav-title::after { display: none !important; }
+
+      .link-loader { position: absolute; left: 8px; right: 8px; bottom: -6px; height: 4px; width: 0; background: var(--navbar-accent); border-radius: 4px; transition: width .45s ease, background .2s, opacity .2s; opacity: .98 }
+      .nav-link:active .link-loader { width: calc(100% - 16px); }
+      /* persistent loading when navigating */
+      .nav-link.is-loading .link-loader { width: calc(100% - 16px); opacity: 1; }
+      .nav-link:hover .link-loader { width: calc(100% - 16px); }
+      .app-header.loading::after { transform: scaleX(1); transition: transform .55s cubic-bezier(.2,.9,.2,1); }
+      .app-header::after { transform: scaleX(0); height: 3px; }
+
+      .nav-title { outline: none; box-shadow: none; }
+      .nav-title .title-text { transition: color .18s; color: inherit; }
+      .nav-title:focus .title-text, .nav-title:active .title-text { color: var(--navbar-accent); text-shadow: 0 8px 28px rgba(0,0,0,0.25); }
+
+      /* DARK MODE FIXES: stronger accents and loader visibility */
+      .dark .nav-link::after { background: var(--navbar-accent); }
+      .dark .link-loader { background: var(--navbar-accent); }
+      .dark .nav-link.is-loading .link-loader { width: calc(100% - 16px); opacity: 1; }
+      .dark .nav-link:hover, .dark .nav-link.is-loading { color: var(--navbar-accent); }
+
+      .dark .nav-hover:hover { box-shadow: 0 12px 40px rgba(59,130,246,0.18), 0 0 38px var(--navbar-accent); color: var(--navbar-accent); }
+      .nav-link[aria-current="page"] { color: var(--navbar-accent); box-shadow: 0 6px 20px rgba(124,58,237,0.12); }
+
+      /* tuning: make the top bar slightly brighter in dark */
+      .dark .app-header::after { background: var(--navbar-accent); }
+
+      /* Small ambient bar across top during a click (visual loading hint) */
+      .app-header::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--navbar-accent); transform-origin: left; transform: scaleX(0); transition: transform .6s ease; pointer-events: none; z-index: 60; }
+
+      /* Accent for strong button to sync with chosen accent */
+      .strong-btn.nav-hover:hover { box-shadow: 0 6px 30px rgba(59,130,246,0.12), 0 0 18px var(--navbar-accent); transform: translateY(-3px) scale(1.02); }
+
+      /* card pop subtle hue in dark mode */
+      .dark .card-bg a.nav-hover:hover, .dark .card-bg .nav-hover:hover { box-shadow: 0 8px 30px rgba(14,165,233,0.08), 0 0 18px rgba(99,102,241,0.06); }
+
+      @media (prefers-reduced-motion: reduce) { .nav-hover, .app-header::before, .nav-link::after, .link-loader { transition:none !important; transform:none !important; } }
+    `}</style>
     {/* Mobile menu */}
     <div className={`md:hidden fixed inset-x-0 top-16 z-40 transition-transform ${mobileOpen ? 'translate-y-0' : '-translate-y-[110%]'} `}>
       <div className="card-bg p-4 border-b shadow-lg">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link to="/home" onClick={()=>setMobileOpen(false)} className="flex items-center gap-2">
+            <NavLink to="/home" onClick={()=>{ setMobileOpen(false); setNavLoading(true); setLoadingPath('/home'); }} className="flex items-center gap-2">
               <img src="/najah-hub-icon.png" alt="Najah Hub" className="h-8 w-8 rounded-md" />
-              <span className="font-bold">Najah Hub</span>
-            </Link>
+              <span className="font-bold link-label">Najah Hub</span>
+            </NavLink>
           </div>
           <div className="flex items-center gap-2">
             <button onClick={()=>{ setMobileOpen(false); toggleDark(); }} className="p-2 admin-btn-outline">{dark ? 'فاتح' : 'داكن'}</button>
@@ -293,12 +365,12 @@ const Navbar = ({ user: userProp }) => {
           </div>
         </div>
         <div className="mt-4 flex flex-col gap-3">
-          <Link to="/home" onClick={()=>setMobileOpen(false)} className="p-3 rounded admin-btn-outline hover:bg-blue-900 hover:bg-opacity-30 dark:hover:bg-blue-700 dark:hover:bg-opacity-40">الرئيسية</Link>
-          <Link to={`/profile/${userData?.id}`} onClick={()=>setMobileOpen(false)} className="p-3 rounded admin-btn-outline hover:bg-blue-900 hover:bg-opacity-30 dark:hover:bg-blue-700 dark:hover:bg-opacity-40">ملفي الشخصي</Link>
-          <Link to="/communities" onClick={()=>setMobileOpen(false)} className="p-3 rounded admin-btn-outline hover:bg-blue-900 hover:bg-opacity-30 dark:hover:bg-blue-700 dark:hover:bg-opacity-40">المجتمعات</Link>
-          <Link to="/ai" onClick={()=>setMobileOpen(false)} className="p-3 rounded admin-btn-outline hover:bg-blue-900 hover:bg-opacity-30 dark:hover:bg-blue-700 dark:hover:bg-opacity-40">الذكاء</Link>
-          <Link to="/settings" onClick={()=>setMobileOpen(false)} className="p-3 rounded admin-btn-outline hover:bg-blue-900 hover:bg-opacity-30 dark:hover:bg-blue-700 dark:hover:bg-opacity-40">الإعدادات</Link>
-          <Link to="/subscribe" onClick={()=>setMobileOpen(false)} className="p-3 rounded admin-btn">اشترك الآن</Link>
+          <NavLink to="/home" onClick={()=>{ setMobileOpen(false); setNavLoading(true); setLoadingPath('/home'); }} className={`p-3 rounded admin-btn-outline nav-hover nav-link hover:bg-blue-900 hover:bg-opacity-30 dark:hover:bg-blue-700 dark:hover:bg-opacity-40 ${loadingPath === '/home' ? 'is-loading' : ''}`}><span className="link-label">الرئيسية</span><span className="link-loader" /></NavLink>
+          <NavLink to={`/profile/${userData?.id}`} onClick={()=>{ setMobileOpen(false); setNavLoading(true); setLoadingPath(`/profile/${userData?.id}`); }} className={`p-3 rounded admin-btn-outline nav-hover nav-link hover:bg-blue-900 hover:bg-opacity-30 dark:hover:bg-blue-700 dark:hover:bg-opacity-40 ${loadingPath === `/profile/${userData?.id}` ? 'is-loading' : ''}`}><span className="link-label">ملفي الشخصي</span><span className="link-loader" /></NavLink>
+          <NavLink to="/communities" onClick={()=>{ setMobileOpen(false); setNavLoading(true); setLoadingPath('/communities'); }} className={`p-3 rounded admin-btn-outline nav-hover nav-link hover:bg-blue-900 hover:bg-opacity-30 dark:hover:bg-blue-700 dark:hover:bg-opacity-40 ${loadingPath === '/communities' ? 'is-loading' : ''}`}><span className="link-label">المجتمعات</span><span className="link-loader" /></NavLink>
+          <NavLink to="/ai" onClick={()=>{ setMobileOpen(false); setNavLoading(true); setLoadingPath('/ai'); }} className={`p-3 rounded admin-btn-outline nav-hover nav-link hover:bg-blue-900 hover:bg-opacity-30 dark:hover:bg-blue-700 dark:hover:bg-opacity-40 ${loadingPath === '/ai' ? 'is-loading' : ''}`}><span className="link-label">الذكاء</span><span className="link-loader" /></NavLink>
+          <NavLink to="/settings" onClick={()=>{ setMobileOpen(false); setNavLoading(true); setLoadingPath('/settings'); }} className={`p-3 rounded admin-btn-outline nav-hover nav-link hover:bg-blue-900 hover:bg-opacity-30 dark:hover:bg-blue-700 dark:hover:bg-opacity-40 ${loadingPath === '/settings' ? 'is-loading' : ''}`}><span className="link-label">الإعدادات</span><span className="link-loader" /></NavLink>
+          <NavLink to="/subscribe" onClick={()=>{ setMobileOpen(false); setNavLoading(true); setLoadingPath('/subscribe'); }} className="p-3 rounded admin-btn">اشترك الآن</NavLink>
         </div>
       </div>
     </div>

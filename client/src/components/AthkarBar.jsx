@@ -13,7 +13,7 @@ const AthkarBar = () => {
   ];
 
   return (
-    <div className="athkar-bar bg-najah-primary text-white h-10 overflow-hidden relative shadow-md border-b border-green-800 flex items-center select-none" dir="ltr">
+    <div className="athkar-bar bg-najah-primary text-white h-10 overflow-hidden w-full relative shadow-md border-b border-green-800 flex items-center select-none sticky top-0 z-50" dir="ltr">
       
       {/* الحاوية السحرية:
         كررنا القائمة 4 مرات.
